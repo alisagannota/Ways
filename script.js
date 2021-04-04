@@ -1,3 +1,20 @@
+document.documentElement.className = document.documentElement.className.replace('no-js','js');
+
+$(document).ready(function(){
+
+    $(window).on("load", function(){
+
+         $('img').click(function() {
+            if ($(this).hasClass("selected")) {
+                 $(this).removeClass('selected').addClass('unselected');
+            } else {
+                 $(this).removeClass('unselected').addClass('selected');
+            }    
+        });
+
+    }); 
+
+});
 
 var Airtable = require('airtable');
 var base = new Airtable({ apiKey: "keyzGMVRW36X04BhO" }).base("appnM2fTZRU6IbXCi");

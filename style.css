@@ -53,6 +53,11 @@ button {
     display: none;
   }
 
-.clicked {
-    border-color: 0.125rem solid red;
+
+.selected {
+    border: 0.125rem solid red;
+}
+
+.unselected {
+    border: 0.125rem solid white;
 }
