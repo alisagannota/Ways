@@ -30,10 +30,29 @@ h1 {
     margin: 0;
 }
 
+.images {
+    display: grid;
+    height: 100hv;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+}
+
+img {
+    width:5rem;
+    height:5rem;
+    margin:0.2rem;
+  }
+
+
 button {
     margin-left: 60%;
+    margin-top: 0.4rem;
 }
 
 .hidden {
     display: none;
   }
+
+.clicked {
+    border-color: 0.125rem solid red;
+}
