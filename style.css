@@ -1,3 +1,7 @@
+:root {
+    --grid-size: 1;
+}
+
 body, html {
     background-color: #24FF00;
     font-family: acumin-pro, sans-serif;
@@ -30,60 +34,11 @@ h1 {
     margin: 0;
 }
 
-.images {
+#images {
     display: grid;
-    height: 100hv;
     margin-top: 1rem;
-}
-
-#grid0 {
-    grid-template-rows: 1fr;
-    grid-template-columns: 1fr;
-}
-
-#grid1 {
-    grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr 1fr;
-}
-
-#grid2 {
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr;
-}
-
-#grid3 {
-    grid-template-rows: 1fr 1fr 1fr 1fr;
-    grid-template-columns:  1fr 1fr 1fr 1fr;
-}
-
-#grid4 {
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-}
-
-#grid5 {
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-}
-
-#grid6 {
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-}
-
-#grid7 {
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-}
-
-#grid8 {
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-}
-
-#grid9 {
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(var(--grid-size), 1fr);
+    grid-template-columns: repeat(var(--grid-size), 1fr);
 }
 
 img {

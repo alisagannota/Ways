@@ -1,112 +1,170 @@
 document.documentElement.className = document.documentElement.className.replace('no-js','js');
 
-$(document).ready(function(){
+let levels = 1;
 
-    $(window).on("load", function(){
-
-         $('img').click(function() {
-            if ($(this).hasClass("selected")) {
-                 $(this).removeClass('selected').addClass('unselected');
-            } else {
-                 $(this).removeClass('unselected').addClass('selected');
-            }    
-        });
-
-    }); 
-
-});
-
-var Airtable = require('airtable');
-var base = new Airtable({ apiKey: "keyzGMVRW36X04BhO" }).base("appnM2fTZRU6IbXCi");
+// https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
   
-//get the "photos" table from the base, select ALL the records, and specify the functions that will receive the data
-base('ways').select({
-    maxRecords: 100,
-    view: "Grid view"
- }).eachPage(gotPageOfPhotos, gotAllPhotos);
+  let photosToView = [];
+  function resetChildrenNodes() {
+    // resetting changing parts
+    photosToView = [];
+    // images
+    let myNode = document.querySelector("#images");
+    while (myNode.firstChild) {
+      myNode.removeChild(myNode.lastChild);
+    }
+    // the title
+    myNode = document.querySelector("#category");
+    myNode.removeChild(myNode.lastChild);
+  
+    document.documentElement.style.setProperty("--grid-size", levels);
+  }
+  
+/********** Airtable **********/
+let Airtable = require("airtable");
+let base = new Airtable({ apiKey: "keyzGMVRW36X04BhO" }).base(
+  "appnM2fTZRU6IbXCi"
+);
 
- // an empty array to hold our photo data
- const photos = [];
+//get the 'photos' table from the base, select ALL the records, and specify the functions that will receive the data
+base("ways")
+  .select({
+    maxRecords: 100,
+    view: "Grid view",
+  })
+  .eachPage(gotPageOfPhotos, gotAllPhotos);
 
 // callback function that receives our data
+const photos = [];
 function gotPageOfPhotos(records, fetchNextPage) {
-    console.log("gotPageOfPhotos()");
-    // add the records from this page to our photos array
-    photos.push(...records);
-    // request more pages
-    fetchNextPage();
+  photos.push(...records);
+  fetchNextPage();
+}
+
+// call back function that is called when all pages are loaded
+function gotAllPhotos(error) {
+  if (error) {
+    console.log("*** Error loading photos!");
+    console.error(error);
+    return;
   }
 
-  // call back function that is called when all pages are loaded
-function gotAllPhotos(err) {
-    console.log("gotAllPhotos()");
-  
-    // report an error, you'd want to do something better than this in production
-    if (err) {
-      console.log("error loading photos");
-      console.error(err);
-      return;
-    }
-  
-    // call function to show the books
-    showPhotos();
-  }
+  // consoleLogPhotos();
+  showPhotos();
+}
 
+function consoleLogPhotos() {
+  console.log("Running consoleLogPhotos...");
+  photos.forEach((photo) => console.log(photo));
+}
 
 // create the book-spines on the shelf
+const setOfTypes = new Set();
 function showPhotos() {
-    console.log("showPhotos()");
-  
-    // // find the shelf element
-    // const shelf = document.getElementById("shelf");
-  
-    // loop through the books loaded from the Airtable API
-    books.forEach((photo) => {
-      // create the div, set its text and class
-      const div = document.createElement("div");
-      div.innerText = photo.fields.attachments;
-      div.classList.add("images");
-    //   // when the user clicks this book spine, call showBook and send the book data and this spine element
-    //   div.addEventListener("click", () => {
-    //     showBook(book, div);
-    //   });
-    //   // put the newly created book spine on the shelf
-    //   shelf.appendChild(div);
-    });
-}
-  
-  // show the detail info for a book, and highlight the active book-spine
-  function showBook(book, div) {
-    console.log("showBook()", book);
-  
-    // find the book detail element
-    const bookDetail = document.getElementById("book-detail");
-  
-    // populate the template with the data in the provided book
-    bookDetail.getElementsByClassName("title")[0].innerText = book.fields.title; //
-    bookDetail.getElementsByClassName("description")[0].innerText =
-      book.fields.description;
-    bookDetail.getElementsByClassName("more")[0].href = book.fields.more;
-    bookDetail.getElementsByClassName("cover-image")[0].src =
-      book.fields.cover_image[0].url;
-  
-    // remove the .active class from any book spines that have it...
-    const shelf = document.getElementById("shelf");
-    const bookSpines = shelf.getElementsByClassName("active");
-    for (const bookSpine of bookSpines) {
-      bookSpine.classList.remove("active");
+  shuffleArray(photos);
+  for (let i = 0; i < (levels*levels); i++) {
+    if (levels === 1) {
+      document.querySelector('#images').style.display = "block";
+    } else {
+      document.querySelector('#images').style.display = "grid";
     }
-    // ...and set it on the one just clicked
-    div.classList.add("active");
-  
-    // reveal the detail element, we only really need this the first time
-    // but its not hurting to do it more than once
-    bookDetail.classList.remove("hidden");
+    const photo = photos[i];
+    photosToView.push(photo);
+
+    // create a unique set of types
+    setOfTypes.add(photo.fields.type.trim());
+
+    // display images to the user
+    let img = document.createElement("img");
+    img.src = photo.fields.attachments[0].url;
+    // img.title = photo.fields.type;
+    img.className = "unselected";
+    img.onclick = function () {
+      this.className === "selected"
+        ? (this.className = "unselected")
+        : (this.className = "selected");
+    };
+    document.querySelector("#images").appendChild(img);
   }
-  
-  
-    // try {
-    //     showTypes();
-    //   } catch (error) {
-    //     error.log(error);
-    //   }
+
+  // shuffle the set to randomise
+  let arrayOfTypes = Array.from(setOfTypes);
+  shuffleArray(arrayOfTypes);
+  // console.log(arrayOfTypes);
+
+  // creating a shorter set based on the number of levels
+  setOfTypes.clear();
+  for (let i = 0; i < arrayOfTypes.length; i++) {
+    if (setOfTypes.size === levels) {
+      break;
+    }
+    setOfTypes.add(arrayOfTypes[i]);
+  }
+  // console.log(setOfTypes);
+
+  // display the task to the user
+  let typesToSelect = "";
+  setOfTypes.forEach((type) => {
+    if (!typesToSelect) {
+      typesToSelect += type;
+    } else {
+      typesToSelect += ", " + type;
+    }
+  });
+  document.querySelector("#category").append(typesToSelect);
+}
+
+// https://stackoverflow.com/questions/31128855/comparing-ecma6-sets-for-equality
+function eqSet(as, bs) {
+  if (as.size !== bs.size) return false;
+  for (var a of as) if (!bs.has(a)) return false;
+  return true;
+}
+
+function nextLevel() {
+  // what user has selected
+  const allSelected_user = new Set();
+  const allUnselected_user = new Set();
+  document.querySelectorAll(".selected").forEach((selected) => {
+    allSelected_user.add(selected.src);
+  });
+  document.querySelectorAll(".unselected").forEach((selected) => {
+    allUnselected_user.add(selected.src);
+  });
+  // console.log(allSelected_user, allUnselected_user);
+
+  // what actually is the truth
+  const allSelected_correctAnswer = new Set();
+  const allUnselected_correctAnswer = new Set();
+  photosToView.forEach((photo) => {
+    if (setOfTypes.has(photo.fields.type.trim())) {
+      allSelected_correctAnswer.add(photo.fields.attachments[0].url);
+    } else {
+      allUnselected_correctAnswer.add(photo.fields.attachments[0].url);
+    }
+  });
+  // console.log(allSelected_correctAnswer, allUnselected_correctAnswer);
+
+  if (eqSet(allSelected_user, allSelected_correctAnswer) && eqSet(allUnselected_user, allUnselected_correctAnswer)) {
+    if (levels === 10) {
+      success();
+      return;
+    }
+
+    levels++;
+    // console.log("CORRECT!", levels);
+    resetChildrenNodes();
+    
+    showPhotos();
+  } else {
+    // console.log("WRONG!");
+    failure();
+    return;
+  }
+}
