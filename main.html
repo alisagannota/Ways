@@ -1,20 +1,58 @@
 <!DOCTYPE html>
 <html lang="en" class="no-js">
-<head>
-   <meta charset="UTF-8">
-   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Captcha</title>
-   <link rel="stylesheet" href="https://use.typekit.net/aom6vqi.css">
-   <link rel="stylesheet" href="normalize.css">
-   <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <a href="quiz.html">
-        <div class=container>
-            <h1 class="window">PROVE YOU ARE <br> NOT A ROBOT</h1>
-        </div>
-    </a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Captcha</title>
+    <link rel="shortcut icon" href="icon.jpg">
+    <link rel="stylesheet" href="normalize.css" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="airtable.browser.js" defer></script>
+    <script src="script.js" type="text/javascript" charset="utf-8" defer></script>
+  </head>
+  
+  <body>
+    <div id="page-one">
+      <div class="container">
+        <h1 class="window glitch" onclick="nextPage()">
+          PROVE YOU ARE <br />
+          NOT A ROBOT
+        </h1>
+      </div>
+    </div>
 
-</body>
+    <div id="page-two">
+      <div class="container">
+        <div class="window">
+          <p>
+            Choose All Images of the
+            <h1 id="category"></h1>
+          </p>
+  
+          <div id="images"></div>
+  
+          <button onclick="nextLevel()">submit</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="page-fail" onclick="startOver()">
+      <div class="container">
+        <h1 class="window glitch">
+          ROBOT ACTIVITY <br />
+          DETECTED!
+        </h1>
+      </div>
+    </div>
+
+    <div id="page-success" onclick="startOver()">
+      <div class="container">
+        <h1 class="window glitch">
+          CONGRATULATIONS! <br />
+          You are human.
+        </h1>
+      </div>
+    </div>
+  </body>
 </html>

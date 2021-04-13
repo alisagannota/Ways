@@ -1,31 +1,29 @@
-document.documentElement.className = document.documentElement.className.replace('no-js','js');
-
 let levels = 1;
 
 // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
-  
-  let photosToView = [];
-  function resetChildrenNodes() {
-    // resetting changing parts
-    photosToView = [];
-    // images
-    let myNode = document.querySelector("#images");
-    while (myNode.firstChild) {
-      myNode.removeChild(myNode.lastChild);
-    }
-    // the title
-    myNode = document.querySelector("#category");
+}
+
+let photosToView = [];
+function resetChildrenNodes() {
+  // resetting changing parts
+  photosToView = [];
+  // images
+  let myNode = document.querySelector("#images");
+  while (myNode.firstChild) {
     myNode.removeChild(myNode.lastChild);
-  
-    document.documentElement.style.setProperty("--grid-size", levels);
   }
-  
+  // the title
+  myNode = document.querySelector("#category");
+  myNode.removeChild(myNode.lastChild);
+
+  document.documentElement.style.setProperty("--grid-size", levels);
+}
+
 /********** Airtable **********/
 let Airtable = require("airtable");
 let base = new Airtable({ apiKey: "keyzGMVRW36X04BhO" }).base(
@@ -64,7 +62,6 @@ function consoleLogPhotos() {
   photos.forEach((photo) => console.log(photo));
 }
 
-// create the book-spines on the shelf
 const setOfTypes = new Set();
 function showPhotos() {
   shuffleArray(photos);
@@ -74,6 +71,7 @@ function showPhotos() {
     } else {
       document.querySelector('#images').style.display = "grid";
     }
+
     const photo = photos[i];
     photosToView.push(photo);
 
@@ -83,7 +81,7 @@ function showPhotos() {
     // display images to the user
     let img = document.createElement("img");
     img.src = photo.fields.attachments[0].url;
-    // img.title = photo.fields.type;
+    img.title = photo.fields.type;
     img.className = "unselected";
     img.onclick = function () {
       this.className === "selected"
@@ -167,4 +165,29 @@ function nextLevel() {
     failure();
     return;
   }
+}
+
+function nextPage() {
+  document.querySelector('#page-one').style.display = "none";
+  document.querySelector('#page-two').style.display = "block";
+}
+
+function failure() {
+  document.querySelector('#page-two').style.display = "none";
+  document.querySelector('#page-fail').style.display = "block";
+}
+
+function success() {
+  document.querySelector('#page-two').style.display = "none";
+  document.querySelector('#page-success').style.display = "block";
+}
+
+function startOver() {
+  document.querySelector('#page-fail').style.display = "none";
+  document.querySelector('#page-success').style.display = "none";
+  document.querySelector('#page-one').style.display = "block";
+
+  levels = 1;
+  resetChildrenNodes();
+  showPhotos();
 }
