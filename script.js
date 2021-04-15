@@ -1,3 +1,6 @@
+const minScreenWidth = 600;
+ const windowWidth  = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
 let levels = 1;
 
 // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
@@ -21,7 +24,12 @@ function resetChildrenNodes() {
   myNode = document.querySelector("#category");
   myNode.removeChild(myNode.lastChild);
 
-  document.documentElement.style.setProperty("--grid-size", levels);
+  document.documentElement.style.setProperty("--grid-size-rows", levels);
+  if (windowWidth < minScreenWidth) { // optimising for smaller screens
+    document.documentElement.style.setProperty("--grid-size-columns", Math.min(levels, 3));
+  } else {
+    document.documentElement.style.setProperty("--grid-size-columns", levels);
+  }
 }
 
 /********** Airtable **********/
@@ -57,15 +65,16 @@ function gotAllPhotos(error) {
   showPhotos();
 }
 
-function consoleLogPhotos() {
-  console.log("Running consoleLogPhotos...");
-  photos.forEach((photo) => console.log(photo));
-}
+// function consoleLogPhotos() {
+//   console.log("Running consoleLogPhotos...");
+//   photos.forEach((photo) => console.log(photo));
+// }
 
 const setOfTypes = new Set();
 function showPhotos() {
   shuffleArray(photos);
-  for (let i = 0; i < (levels*levels); i++) {
+  const numberOfPhotos = windowWidth < minScreenWidth ? levels*(Math.min(levels, 3)) : levels*levels;
+   for (let i = 0; i < (numberOfPhotos); i++) {
     if (levels === 1) {
       document.querySelector('#images').style.display = "block";
     } else {

@@ -1,5 +1,6 @@
 :root {
-    --grid-size: 1;
+    --grid-size-rows: 1;
+    --grid-size-columns: 1;
 }
 
 body, html {
@@ -235,8 +236,8 @@ h1 {
 #images {
     justify-items: center;
     margin-top: 1rem;
-    grid-template-rows: repeat(var(--grid-size), 1fr);
-    grid-template-columns: repeat(var(--grid-size), 1fr);
+    grid-template-rows: repeat(var(--grid-size-rows), 1fr);
+    grid-template-columns: repeat(var(--grid-size-columns), 1fr);
 }
 
 img {
@@ -263,9 +264,5 @@ button {
     and (-webkit-device-pixel-ratio : 3) { 
         .window {
             max-width:80vw;
-        }
-        img {
-            width:3.5rem;
-            height:3.5rem;
         }
     }
